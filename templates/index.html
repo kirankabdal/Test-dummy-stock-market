@@ -7,42 +7,148 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .main-header {
+            color: #fff;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            padding: 40px 0;
             text-align: center;
-            margin: 20px;
+            font-size: 3em;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin: 0;
+            width: 80%;
+            max-width: 800px;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        h2 {
+            color: #3e3e3e;
         }
         table {
-            width: 50%;
-            margin: 0 auto;
+            width: 80%;
+            margin: 20px auto;
             border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         th, td {
-            padding: 8px;
+            padding: 12px;
             text-align: left;
             border: 1px solid #ddd;
         }
         th {
-            background-color: #f4f4f4;
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e0f7fa;
+        }
+        .form-container {
+            margin-top: 10px;
+        }
+        input[type="number"] {
+            padding: 5px;
+            margin: 5px;
+            width: 60px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .portfolio-table {
+            margin-top: 20px;
+            width: 60%;
+        }
+        .portfolio-table th {
+            background-color: #f44336;
+        }
+        .portfolio-table td {
+            background-color: #fff;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to the Dummy Stock Market</h1>
+    <h1 class="main-header">Welcome to the Stock Market</h1>
     <h2>Live Stock Prices</h2>
     <table>
         <tr>
             <th>Stock Symbol</th>
             <th>Company Name</th>
             <th>Current Price</th>
+            <th>Buy</th>
+            <th>Sell</th>
         </tr>
         {% for symbol, stock in stocks.items() %}
         <tr>
             <td>{{ symbol }}</td>
             <td>{{ stock.name }}</td>
             <td>${{ stock.price | round(2) }}</td>
+            <td>
+                <form action="{{ url_for('buy_stock', symbol=symbol) }}" method="POST" class="form-container">
+                    <input type="number" name="quantity" min="1" placeholder="Quantity" required>
+                    <button type="submit">Buy</button>
+                </form>
+            </td>
+            <td>
+                <form action="{{ url_for('sell_stock', symbol=symbol) }}" method="POST" class="form-container">
+                    <input type="number" name="quantity" min="1" placeholder="Quantity" required>
+                    <button type="submit">Sell</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </table>
-    <br>
-    <p>Prices are updated every time you refresh the page.</p>
+
+    <h2>Your Portfolio</h2>
+    <table class="portfolio-table">
+        <tr>
+            <th>Stock Symbol</th>
+            <th>Quantity Owned</th>
+        </tr>
+        {% for symbol, quantity in portfolio.items() %}
+        <tr>
+            <td>{{ symbol }}</td>
+            <td>{{ quantity }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>

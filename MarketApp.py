@@ -1,6 +1,5 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import random
-import time
 
 app = Flask(__name__)
 
@@ -11,6 +10,15 @@ stocks = {
     "AMZN": {"name": "Amazon.com Inc.", "price": 3400.0},
     "TSLA": {"name": "Tesla Inc.", "price": 800.0},
     "MSFT": {"name": "Microsoft Corporation", "price": 300.0},
+}
+
+# Dummy user portfolio (stock symbol and quantity)
+portfolio = {
+    "AAPL": 0,
+    "GOOGL": 0,
+    "AMZN": 0,
+    "TSLA": 0,
+    "MSFT": 0,
 }
 
 # Simulating stock price changes
@@ -24,7 +32,23 @@ def update_stock_prices():
 @app.route('/')
 def index():
     update_stock_prices()  # Update stock prices
-    return render_template('index.html', stocks=stocks)
+    return render_template('index.html', stocks=stocks, portfolio=portfolio)
+
+@app.route('/buy/<symbol>', methods=['POST'])
+def buy_stock(symbol):
+    if symbol in stocks:
+        quantity = int(request.form['quantity'])
+        if quantity > 0:
+            portfolio[symbol] += quantity
+    return redirect(url_for('index'))
+
+@app.route('/sell/<symbol>', methods=['POST'])
+def sell_stock(symbol):
+    if symbol in stocks:
+        quantity = int(request.form['quantity'])
+        if quantity > 0 and portfolio[symbol] >= quantity:
+            portfolio[symbol] -= quantity
+    return redirect(url_for('index'))
 
 @app.route('/api/stocks')
 def api_stocks():
