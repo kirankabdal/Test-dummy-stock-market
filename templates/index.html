@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dummy Stock Market</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        table {
+            width: 50%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Dummy Stock Market</h1>
+    <h2>Live Stock Prices</h2>
+    <table>
+        <tr>
+            <th>Stock Symbol</th>
+            <th>Company Name</th>
+            <th>Current Price</th>
+        </tr>
+        {% for symbol, stock in stocks.items() %}
+        <tr>
+            <td>{{ symbol }}</td>
+            <td>{{ stock.name }}</td>
+            <td>${{ stock.price | round(2) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <p>Prices are updated every time you refresh the page.</p>
+</body>
+</html>
